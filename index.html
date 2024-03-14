@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Carousel</title>
+	<style>
+		.carousel {
+			width: 100%;
+			/* Adjusted width to accommodate 4 items */
+			overflow: hidden;
+			position: relative;
+			margin: 0 auto;
+		}
+
+		.carousel-container {
+			display: flex;
+			transition: transform 0.5s ease;
+		}
+
+		.carousel-item {
+			flex: 0 0 300px;
+			/* Adjusted item width to fit 4 items */
+			height: 200px;
+			margin-right: 10px;
+			background-color: #f0f0f0;
+			text-align: center;
+			line-height: 200px;
+			font-size: 24px;
+		}
+
+		.arrow {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+			padding: 10px;
+			background-color: rgba(0, 0, 0, 0.5);
+			color: #fff;
+		}
+
+		.left-arrow {
+			left: 0;
+			display: none;
+		}
+
+		.right-arrow {
+			right: 0;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="carousel">
+		<div class="carousel-container">
+			<div class="carousel-item">1</div>
+			<div class="carousel-item">2</div>
+			<div class="carousel-item">3</div>
+			<div class="carousel-item">4</div>
+			<div class="carousel-item">5</div>
+			<div class="carousel-item">6</div>
+			<div class="carousel-item">7</div>
+			<div class="carousel-item">8</div>
+			<div class="carousel-item">9</div>
+			<div class="carousel-item">10</div>
+		</div>
+		<div class="arrow left-arrow">&#10094;</div>
+		<div class="arrow right-arrow">&#10095;</div>
+	</div>
+
+	<script>
+		const carousel = document.querySelector('.carousel');
+		const container = document.querySelector('.carousel-container');
+		const items = document.querySelectorAll('.carousel-item');
+		const totalItems = items.length;
+		const itemWidth = items[0].offsetWidth + 10; // Including margin
+		const visibleItems = 4; // Number of items visible at once
+
+		let currentIndex = 0;
+
+		// Function to move carousel items
+		function moveCarousel(direction) {
+			if (direction === 'left') {
+				currentIndex = currentIndex <= 0 ? totalItems - visibleItems : currentIndex - 1;
+				console.log(currentIndex);
+				if (currentIndex == 0) {
+					document.querySelector('.left-arrow').style.display = 'none';
+				}
+				else {
+					document.querySelector('.right-arrow').style.display = 'block';
+
+				}
+			} else {
+				currentIndex = currentIndex >= totalItems - visibleItems ? 0 : currentIndex + 1;
+				console.log(currentIndex);
+				if (currentIndex == 6) {
+					document.querySelector('.right-arrow').style.display = 'none';
+				}
+				else {
+					document.querySelector('.left-arrow').style.display = 'block';
+
+				}
+			}
+			const newPosition = -currentIndex * itemWidth;
+			container.style.transform = `translateX(${newPosition}px)`;
+
+			// Disable/enable arrow buttons based on currentIndex
+			document.querySelector('.left-arrow').disabled = currentIndex <= 0;
+			document.querySelector('.right-arrow').disabled = currentIndex >= totalItems - visibleItems;
+		}
+
+		// Event listeners for arrow buttons
+		document.querySelector('.left-arrow').addEventListener('click', () => {
+			moveCarousel('left');
+		});
+
+		document.querySelector('.right-arrow').addEventListener('click', () => {
+			moveCarousel('right');
+		});
+
+		// Initially disable left arrow
+		document.querySelector('.left-arrow').disabled = true;
+
+
+	</script>
+
+</body>
+
+</html>
