@@ -71,59 +71,50 @@
 	</div>
 
 	<script>
-		const carousel = document.querySelector('.carousel');
-		const container = document.querySelector('.carousel-container');
-		const items = document.querySelectorAll('.carousel-item');
-		const totalItems = items.length;
-		const itemWidth = items[0].offsetWidth + 10; // Including margin
-		const visibleItems = 4; // Number of items visible at once
+		function updateCarousel() {
+			const carousel = document.querySelector('.carousel');
+			const container = document.querySelector('.carousel-container');
+			const items = document.querySelectorAll('.carousel-item');
+			const totalItems = items.length;
+			const itemWidth = items[0].offsetWidth + 10; // Including margin
+			const visibleItems = Math.floor(carousel.offsetWidth / itemWidth); // Number of items visible at once
 
-		let currentIndex = 0;
+			let currentIndex = 0;
 
-		// Function to move carousel items
-		function moveCarousel(direction) {
-			if (direction === 'left') {
-				currentIndex = currentIndex <= 0 ? totalItems - visibleItems : currentIndex - 1;
-				console.log(currentIndex);
-				if (currentIndex == 0) {
-					document.querySelector('.left-arrow').style.display = 'none';
+			// Function to move carousel items
+			function moveCarousel(direction) {
+				if (direction === 'left') {
+					currentIndex = currentIndex <= 0 ? totalItems - visibleItems : currentIndex - 1;
+				} else {
+					currentIndex = currentIndex >= totalItems - visibleItems ? 0 : currentIndex + 1;
 				}
-				else {
-					document.querySelector('.right-arrow').style.display = 'block';
+				const newPosition = -currentIndex * itemWidth;
+				container.style.transform = `translateX(${newPosition}px)`;
 
-				}
-			} else {
-				currentIndex = currentIndex >= totalItems - visibleItems ? 0 : currentIndex + 1;
-				console.log(currentIndex);
-				if (currentIndex == 6) {
-					document.querySelector('.right-arrow').style.display = 'none';
-				}
-				else {
-					document.querySelector('.left-arrow').style.display = 'block';
-
-				}
+				// Disable/enable arrow buttons based on currentIndex
+				document.querySelector('.left-arrow').style.display = currentIndex <= 0 ? 'none' : 'block';
+				document.querySelector('.right-arrow').style.display = currentIndex >= totalItems - visibleItems ? 'none' : 'block';
 			}
-			const newPosition = -currentIndex * itemWidth;
-			container.style.transform = `translateX(${newPosition}px)`;
 
-			// Disable/enable arrow buttons based on currentIndex
-			document.querySelector('.left-arrow').disabled = currentIndex <= 0;
-			document.querySelector('.right-arrow').disabled = currentIndex >= totalItems - visibleItems;
+			// Event listeners for arrow buttons
+			document.querySelector('.left-arrow').addEventListener('click', () => {
+				moveCarousel('left');
+			});
+
+			document.querySelector('.right-arrow').addEventListener('click', () => {
+				moveCarousel('right');
+			});
+
+			// Initially hide or show arrows based on the number of visible items
+			document.querySelector('.left-arrow').style.display = visibleItems >= totalItems ? 'none' : 'block';
+			document.querySelector('.right-arrow').style.display = visibleItems >= totalItems ? 'none' : 'block';
 		}
 
-		// Event listeners for arrow buttons
-		document.querySelector('.left-arrow').addEventListener('click', () => {
-			moveCarousel('left');
-		});
+		// Call updateCarousel on window resize
+		window.addEventListener('resize', updateCarousel);
 
-		document.querySelector('.right-arrow').addEventListener('click', () => {
-			moveCarousel('right');
-		});
-
-		// Initially disable left arrow
-		document.querySelector('.left-arrow').disabled = true;
-
-
+		// Call updateCarousel initially
+		updateCarousel();
 	</script>
 
 </body>
